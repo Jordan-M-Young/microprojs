@@ -1,0 +1,7 @@
+{
+    "field_A": 1,
+    "field_B":2,
+    "field_C":"a",
+    "field_D":[1,2,3],
+    "field_E":{"sub1":1,"sub2":"b"}
+}
