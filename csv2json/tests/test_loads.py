@@ -1,4 +1,4 @@
-from src.csv2json import load_csv, load_json
+from src.csv2json import load_csv, load_json, csv_to_json
 
 TEST_CSV_FILE = './tests/assets/test.csv'
 TEST_JSON_FILE = './tests/assets/test.json'
@@ -38,4 +38,5 @@ def test_load_json_data():
     assert data['field_C'] == "a"
     assert data['field_D'] == [1,2,3]
     assert data['field_E'] == {"sub1":1,"sub2":"b"}
+
 
