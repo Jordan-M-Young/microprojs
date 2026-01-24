@@ -13,7 +13,7 @@ def load_json(filename: str) -> dict:
         return json.loads(jfile.read())
 
 
-
+    
 def csv_to_json(data: list, has_headers=True) -> dict:
     first_row = data[0]
     first_row_len = len(first_row)
@@ -44,5 +44,47 @@ def csv_to_json(data: list, has_headers=True) -> dict:
                 json_data[header] = [item]
     
     return json_data
+
+
+
+
+
+# scenarios
+
+#1. multiple jsons with same fields
+def mult_json_to_rows(data: list[dict]) -> list:
+
+    return []
+
+
+
+
+#2. single json with arrays
+def array_json_to_rows(data: dict) -> list:
+
+    max_length = 0
+    headers = []
+    for key, value in data.items():
+        headers.append(key)
+        val_length = len(value)
+        if val_length > max_length:
+            max_length = val_length
+
+
+
+    tabular_data = [[] for i in range(max_length)]
+    
+    for arr in data.values():
+        for idx, value in enumerate(arr):
+            tabular_data[idx].append(value)
+    
+
+    tabular_data.insert(0,headers)
+
+    return tabular_data
+
+
+
+
 
 
