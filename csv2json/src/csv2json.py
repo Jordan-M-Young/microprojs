@@ -1,5 +1,18 @@
 import json
 import csv
+import src.constants as K
+import os
+
+
+def write_json(filepath: str, data: dict) -> None:
+    with open(filepath, "w") as jfile:
+        json.dump(data, jfile)
+
+
+def write_csv(filepath, data: list) -> None:
+    with open(filepath, "w") as csvf:
+        writer = csv.writer(csvf, delimiter=",")
+        writer.writerows(data)
 
 
 def load_csv(filename: str) -> list:
@@ -17,6 +30,7 @@ def csv_to_json(data: list, has_headers=True) -> dict:
     first_row = data[0]
     first_row_len = len(first_row)
     first_row_range = range(first_row_len)
+
     if has_headers:
         headers = first_row
         data_range = range(len(data))[1:]
@@ -100,22 +114,6 @@ def jsons_to_row(
     return rows
 
 
-# def mult_json_to_rows(data: list[dict]) -> list:
-#     key_store = {}
-#     #o(n^2)
-#     count = 0
-#     for json in data:
-#         for key in data.keys():
-#             if key_store.get(key):
-#                 continue
-#             key_store[key] = count
-#             count += 1
-
-
-#     return []
-
-
-# 2. single json with arrays
 def array_json_to_rows(data: dict) -> list:
     max_length = 0
     headers = []
@@ -134,3 +132,41 @@ def array_json_to_rows(data: dict) -> list:
     tabular_data.insert(0, headers)
 
     return tabular_data
+
+
+def check_file_or_dir(path: str) -> K.CheckOutput:
+    if os.path.isdir(path):
+        return K.CheckOutput.DIR
+
+    if os.path.isfile(path):
+        return K.CheckOutput.FILE
+
+    return K.CheckOutput.DNE
+
+
+def get_files(path: str) -> list[str]:
+    files = os.listdir(path)
+    return [f"{path}/{file}" for file in files]
+
+
+def json_to_csv(path: str, new_path: str) -> None:
+    status = check_file_or_dir(path)
+
+    if status == K.CheckOutput.FILE:
+        data = load_json(path)
+        rows = array_json_to_rows(data)
+        write_csv(new_path, rows)
+
+    elif status == K.CheckOutput.DIR:
+        files = get_files(path)
+        data = []
+        for file in files:
+            if ".json" not in file:
+                continue
+            data.append(load_json(file))
+
+        rows = jsons_to_row(data)
+        write_csv(new_path, rows)
+
+    else:
+        print("File or Directory does not exist!")
