@@ -1,6 +1,7 @@
 import json
 import csv
 import src.constants as K
+from src.utils import check_file_or_dir
 import os
 
 
@@ -57,17 +58,13 @@ def csv_to_json(data: list, has_headers=True) -> dict:
     return json_data
 
 
-# scenarios
-
-
-# 1. multiple jsons with same fields
 def key_discovery(data: list[dict]) -> dict:
     key_store = {}
     headers = []
     # o(n^2)
     count = 0
-    for json in data:
-        for key in json.keys():
+    for json_obj in data:
+        for key in json_obj.keys():
             if key_store.get(key) is None:
                 key_store[key] = count
                 count += 1
@@ -84,10 +81,10 @@ def jsons_to_row(
 
     rows = [headers]
 
-    for json in data:
+    for json_obj in data:
         row = []
         curr_idx = 0
-        for key, value in json.items():
+        for key, value in json_obj.items():
             curr_key_idx = key_map[key]
 
             print(curr_idx, curr_key_idx)
@@ -132,16 +129,6 @@ def array_json_to_rows(data: dict) -> list:
     tabular_data.insert(0, headers)
 
     return tabular_data
-
-
-def check_file_or_dir(path: str) -> K.CheckOutput:
-    if os.path.isdir(path):
-        return K.CheckOutput.DIR
-
-    if os.path.isfile(path):
-        return K.CheckOutput.FILE
-
-    return K.CheckOutput.DNE
 
 
 def get_files(path: str) -> list[str]:
