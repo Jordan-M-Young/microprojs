@@ -1,6 +1,7 @@
 import argparse
 from utils import check_file_or_dir, check_file_format
 from constants import FileFormats, CheckOutput, JSON2CSV, CSV2JSON
+import transforms as TR
 
 
 def main() -> int:
@@ -8,8 +9,16 @@ def main() -> int:
     parser.add_argument("transform", help="display a square of a given number")
     parser.add_argument("input", help="input file or dir")
     parser.add_argument("output", help="output file or dir")
+    parser.add_argument(
+        "--headers",
+        help="use if transforming from csv to json, does your csv have headers? if yes -> 1 if not -> 0",
+    )
 
     args = parser.parse_args()
+
+    header_flag = True
+    if args.headers:
+        print(args.headers)
 
     input = args.input
     output = args.output
@@ -44,7 +53,12 @@ def main() -> int:
             print(f"output format: {output} not supported for {CSV2JSON} transform")
             return 0
 
-        print(f"Input {input} & Output {output} are valid for the {CSV2JSON} transform")
+        if input_format == FileFormats.CSV and output_format == FileFormats.JSON:
+            data = TR.load_json(input)
+            if args.headers == "0":
+                header_flag = False
+            json_data = TR.csv_to_json(data, has_headers=header_flag)
+            TR.write_json(output, json_data)
 
     elif args.transform == JSON2CSV:
         if input_format == FileFormats.CSV or input_format == FileFormats.OTHER:
@@ -56,6 +70,10 @@ def main() -> int:
         if output_format == FileFormats.JSON or output_format == FileFormats.OTHER:
             print(f"output format: {output} not supported for {JSON2CSV} transform")
             return 0
+
+        if output_format == FileFormats.CSV:
+            TR.json_to_csv(input, output)
+            return 1
 
         print(f"Input {input} & Output {output} are valid for the {JSON2CSV} transform")
 

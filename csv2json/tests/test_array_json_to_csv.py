@@ -1,4 +1,4 @@
-from src.csv2json import array_json_to_rows, load_json
+from src.transforms import array_json_to_rows, load_json
 
 
 def test_array_json_to_rows_type():

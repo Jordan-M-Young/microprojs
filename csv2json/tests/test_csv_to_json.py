@@ -1,4 +1,4 @@
-from src.csv2json import csv_to_json, load_csv
+from src.transforms import csv_to_json, load_csv
 
 TEST_CSV_FILE = "./tests/assets/test.csv"
 TEST_NO_HEADERS_CSV_FILE = "./tests/assets/test_no_headers.csv"

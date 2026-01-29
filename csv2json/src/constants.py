@@ -14,3 +14,9 @@ class FileFormats(Enum):
     CSV = "csv"
     JSON = "json"
     OTHER = "other"
+
+
+class DataTypes(Enum):
+    FLOAT = "float"
+    INT = "int"
+    STR = "str"
